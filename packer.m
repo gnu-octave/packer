@@ -44,22 +44,22 @@ switch nargin
 			fprintf("%s \t %s \t %s \t %s \t %s\n", infos.name, infos.home, infos.version, infos.license, strjoin (infos.deps,',')) 
 		endif
 
-		## packer update
-		## =============
-		## update database from server
+	## packer update
+	## =============
+	## update database from server
 
-		## packer upgrade <char>
-		## =====================
-		## upgrade package
-		## upgrade # everything
+	## packer upgrade <char>
+	## =====================
+	## upgrade package
+	## upgrade # everything
 
-		## packer add <char>
-		## =================
-		## add package to local database
+	## packer add <char>
+	## =================
+	## add package to local database
 
-		## packer uninstall <char>
-		## =======================
-		## uninstall package
+	## packer uninstall <char>
+	## =======================
+	## uninstall package
 
         else
 		    print_help
@@ -135,17 +135,15 @@ function packer_install(package)
 				[dep,idx]=unique (dep,"first");
 				## FIXME
 				# reindexing...bad way?!
-				for n = 1:rows(idx)
-					deps{idx(n),1}=dep{n,1};
-				endfor
-			
+				dep(idx,1)=dep;
+
 				## install deps
-				for n = rows(deps):-1:1
-					fprintf("Installing %s\n", deps{n})
-#					eval(fprintf("pkg install -forge %s",deps{n});
+				for n = rows(dep):-1:1
+					fprintf("Installing %s\n", dep{n})
+#					eval(fprintf("pkg install -forge %s",dep{n});
 				endfor
 			endif
-			
+
 			## install package
 			fprintf("Installing %s\n", package)
 #			eval(fprintf("pkg install -forge %s", package);
