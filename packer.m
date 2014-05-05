@@ -19,7 +19,7 @@ switch nargin
         endif 
 
     case 2
-    
+
     	## packer search|find <char>
     	## =========================
         if strcmp(varargin{1},"search")||strcmp(varargin{1},"find")
@@ -27,20 +27,39 @@ switch nargin
             # check if folder exist
             # check if packer.db file exist
             packer_search(varargin{2});
-            
+
         ## packer install <char>
         ## =====================
         elseif strcmp(varargin{1},"install")
         	packer_install(varargin{2}); 
 
-		elseif strcmp(varargin{1},"info")
-			infos=packer_info(varargin{2});
-			if numel(infos)>0
-				## FIXME
-				# bad format...
-				# fprintf("Name			Home		Version			License				deps\n")
-				fprintf("%s \t %s \t %s \t %s \t %s\n", infos.name, infos.home, infos.version, infos.license, strjoin (infos.deps,',')) 
-			endif
+	## packer info <char>
+	## ==================
+	elseif strcmp(varargin{1},"info")
+		infos=packer_info(varargin{2});
+		if numel(infos)>0
+			## FIXME
+			# bad format...
+			# fprintf("Name			Home		Version			License				deps\n")
+			fprintf("%s \t %s \t %s \t %s \t %s\n", infos.name, infos.home, infos.version, infos.license, strjoin (infos.deps,',')) 
+		endif
+
+		## packer update
+		## =============
+		## update database from server
+
+		## packer upgrade <char>
+		## =====================
+		## upgrade package
+		## upgrade # everything
+
+		## packer add <char>
+		## =================
+		## add package to local database
+
+		## packer uninstall <char>
+		## =======================
+		## uninstall package
 
         else
 		    print_help
