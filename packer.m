@@ -98,13 +98,7 @@ function packer_getdb()
 	if exist(installdir,"dir")~=7
 		mkdir(installdir);
 	endif
-	
-	##FIXME
-	# urlwrite can't write to ~/ ?
-#	cdir=pwd;
-#	cd ("~");
-#	hdir=pwd;
-#	cd(cdir);
+
 #	dbpath=strcat(hdir,"/.octave/sfnet.db");
 	urlwrite("https://raw.githubusercontent.com/octave-de/packer-utils/master/sfnet.m", [installdir "/sfnet.db"]);
 endfunction
