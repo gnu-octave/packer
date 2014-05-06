@@ -81,9 +81,10 @@ function packer_update()
 	installdir=pkg("prefix");
 	if exist([installdir "/packer.db"])
 		load([installdir "/packer.db"]);
-		urlwrite(db.config{1,2}, [installdir "/sfnet.db"]);
-		run ([installdir "/sfnet.db"]);
+		urlwrite(db.config{1,2}, [installdir "/packer.new.db"]);
+		run ([installdir "/packer.new.db"]);
 		db.sfnet=d.sfnet;
+		db.github=d.github;
 		save([installdir "/packer.db"],"db");
 	else
 		fprintf("packer.db database not found, please run packer init\n")
@@ -100,14 +101,14 @@ function packer_init()
 		if ~isempty(str)
 		    if strcmp(str,'y')
 		    	packer_getdb()
-		    	run ([installdir "/sfnet.db"]);
+		    	run ([installdir "/packer.new.db"]);
 		    	db=d;
 		    	save([installdir "/packer.db"],"db");
 		    endif
 		endif
 	else
 		packer_getdb()
-		run ([installdir "/sfnet.db"]);
+		run ([installdir "/packer.new.db"]);
 		db=d;
 		save([installdir "/packer.db"],"db");
 	endif
@@ -119,8 +120,7 @@ function packer_getdb()
 		mkdir(installdir);
 	endif
 
-#	dbpath=strcat(hdir,"/.octave/sfnet.db");
-	urlwrite("https://raw.githubusercontent.com/octave-de/packer-utils/master/sfnet.m", [installdir "/sfnet.db"]);
+	urlwrite("https://raw.githubusercontent.com/octave-de/packer-utils/master/packerdb.m", [installdir "/packer.new.db"]);
 endfunction
 
 function infos=packer_info(package)
