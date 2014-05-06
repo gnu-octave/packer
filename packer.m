@@ -73,40 +73,45 @@ endfunction
 
 function packer_init()
 
-	if exist("~/.octave/packer.db")
+	installdir=pkg("prefix");
+	if exist([installdir "/packer.db"])
 		prompt = 'packer.db already exist. Do you realy want to reset it? y/n [n]: ';
 		str = input(prompt,'s');
 		if ~isempty(str)
 		    if strcmp(str,'y')
 		    	packer_getdb()
-		    	run ~/.octave/sfnet.db
-		    	save("~/.octave/packer.db","db");
+		    	run ([installdir "/sfnet.db"]);
+		    	db=d;
+		    	save([installdir "/packer.db"],"db");
 		    endif
 		endif
 	else
 		packer_getdb()
-		run ~/.octave/sfnet.db
-		save("~/.octave/packer.db","db");
+		run ([installdir "/sfnet.db"]);
+		db=d;
+		save([installdir "/packer.db"],"db");
 	endif
 endfunction
 
 function packer_getdb()
-	if exist("~/.octave/","dir")~=7
-		mkdir("~/.octave/");
+	installdir=pkg("prefix");
+	if exist(installdir,"dir")~=7
+		mkdir(installdir);
 	endif
 	
 	##FIXME
 	# urlwrite can't write to ~/ ?
-	cdir=pwd;
-	cd ("~");
-	hdir=pwd;
-	cd(cdir);
-	dbpath=strcat(hdir,"/.octave/sfnet.db");
-	urlwrite("https://raw.githubusercontent.com/octave-de/packer-utils/master/sfnet.m", dbpath);
+#	cdir=pwd;
+#	cd ("~");
+#	hdir=pwd;
+#	cd(cdir);
+#	dbpath=strcat(hdir,"/.octave/sfnet.db");
+	urlwrite("https://raw.githubusercontent.com/octave-de/packer-utils/master/sfnet.m", [installdir "/sfnet.db"]);
 endfunction
 
 function infos=packer_info(package)
-    load("~/.octave/packer.db");
+	installdir=pkg("prefix");
+    load([installdir "/packer.db"]);
     [r,~]=find(strcmp(db.sfnet,package));
     if numel(r)==0
     	fprintf("%s not found or unknown.\n", package)
@@ -124,8 +129,9 @@ function packer_install(package)
 	if exist(package,"file")
 		fprintf("Installing %s\n",package)
 #		eval(fprintf("pkg install %s",package))
-	else 
-		load("~/.octave/packer.db");
+	else
+		installdir=pkg("prefix");
+		load([installdir "/packer.db"]);
 		[r,~]=find(strcmp(db.sfnet,package));
 		if numel(r)==0
 			fprintf("%s not found or unknown.\n", package)
@@ -162,7 +168,8 @@ function dep=packer_dependencies(r,package,db)
 endfunction
 
 function dep=packer_add_dep(dep)
-	load("~/.octave/packer.db");
+	installdir=pkg("prefix");
+	load([installdir "/packer.db"]);
 	for n = 1:rows(dep)
 		[r,~]=find(strcmp(db.sfnet,dep{n,1}));
 		newdep=db.sfnet{r,7};
@@ -185,7 +192,8 @@ function dep=packer_add_dep(dep)
 endfunction
 
 function packer_search(searchstring)
-	load("~/.octave/packer.db");
+	installdir=pkg("prefix");
+	load([installdir "/packer.db"]);
 	[r,~]=find(strcmp(db.sfnet,searchstring));
 	if numel(r)==0
 		r=cellfun(@(str) rfind(str, searchstring), db.sfnet);
