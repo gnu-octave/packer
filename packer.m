@@ -16,7 +16,15 @@ switch nargin
     	## ===========
         if strcmp(varargin{1},"init")
         	packer_init()
-        endif 
+
+        ## packer update
+        ## =============
+        elseif strcmp(varargin{1},"update")
+        	packer_update()
+
+        else
+        	print_help
+        endif
 
     case 2
 
@@ -44,9 +52,6 @@ switch nargin
 			fprintf("%s \t %s \t %s \t %s \t %s\n", infos.name, infos.home, infos.version, infos.license, strjoin (infos.deps,',')) 
 		endif
 
-	## packer update
-	## =============
-	## update database from server
 
 	## packer upgrade <char>
 	## =====================
@@ -68,6 +73,21 @@ switch nargin
     otherwise
         print_help
 end
+
+endfunction
+
+function packer_update()
+
+	installdir=pkg("prefix");
+	if exist([installdir "/packer.db"])
+		load([installdir "/packer.db"]);
+		urlwrite(db.config{1,2}, [installdir "/sfnet.db"]);
+		run ([installdir "/sfnet.db"]);
+		db.sfnet=d.sfnet;
+		save([installdir "/packer.db"],"db");
+	else
+		fprintf("packer.db database not found, please run packer init\n")
+	endif
 
 endfunction
 
