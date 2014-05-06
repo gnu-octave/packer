@@ -188,7 +188,7 @@ function packer_search(searchstring)
 	load("~/.octave/packer.db");
 	[r,~]=find(strcmp(db.sfnet,searchstring));
 	if numel(r)==0
-		r=cellfun(@(str) recursivefind(str, searchstring), db.sfnet);
+		r=cellfun(@(str) rfind(str, searchstring), db.sfnet);
 		if numel(r)==0
 			fprintf("%s not found or unknown.\n", searchstring)
 		else
@@ -205,7 +205,7 @@ function result = rfind(str, pattern)
 		result = strcmp(str, pattern);
 	elseif iscell(str)
 		result = cellfun(@(str) rfind(str,pattern), str);
-		result = any(res(:));
+		result = any(result(:));
 	else
 		result = false;
 	endif
