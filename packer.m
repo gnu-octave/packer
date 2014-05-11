@@ -21,6 +21,11 @@ switch nargin
         ## =============
         elseif strcmp(varargin{1},"update")
         	packer_update()
+        	
+        ## packer list
+        ## ===========
+        elseif strcmp(varargin{1},"list")
+ 			packer_list()
 
         else
         	print_help
@@ -74,6 +79,17 @@ switch nargin
         print_help
 end
 
+endfunction
+
+function a=packer_list()
+    installdir=pkg("prefix");
+    load([installdir "/packer.db"]);
+	f=fieldnames(db);
+	for n = 2:numel(f)
+		for r = 1:rows(db.(f{n}))
+			fprintf("%s/%s %s\n    %s\n", db.(f{n}){r,1}, db.(f{n}){r,2}, db.(f{n}){r,3}, db.(f{n}){r,8})
+		endfor
+	endfor
 endfunction
 
 function packer_update()
@@ -225,6 +241,7 @@ function packer_search(searchstring)
 	    	one_time_found=1;
 	    endif
 	endfor
+
 	if one_time_found == 0
 	    fprintf("%s not found or unknown.\n", searchstring)
 	endif
