@@ -208,17 +208,25 @@ endfunction
 function packer_search(searchstring)
 	installdir=pkg("prefix");
 	load([installdir "/packer.db"]);
-	[r,~]=find(strcmp(db.sfnet,searchstring));
-	if numel(r)==0
-		r=cellfun(@(str) rfind(str, searchstring), db.sfnet);
-		if numel(r)==0
-			fprintf("%s not found or unknown.\n", searchstring)
-		else
-			[r,~]=find(r==1);
-			fprintf("Function %s is member of %s/%s\n", searchstring, db.sfnet{r,1}, db.sfnet{r,2})
-		endif
-	else
-		fprintf("%s/%s %s\n", db.sfnet{r,1}, db.sfnet{r,2}, db.sfnet{r,3})
+	f=fieldnames(db);
+	# start iteration at 2, because 1 is db.config
+	one_time_found=0;
+    for n = 2:numel(f)
+	    [r,~]=find(strcmp(db.(f{n}),searchstring));
+	    if numel(r)==0
+		    r=cellfun(@(str) rfind(str, searchstring), db.(f{n}));
+		    if sum(sum(r))>0
+		    	[r,~]=find(r==1);
+		    	fprintf("%s/%s %s: has Function %s\n", db.(f{n}){r,1}, db.(f{n}){r,2}, db.(f{n}){r,3}, searchstring)
+	            one_time_found=1;
+		    endif
+	    else
+	    	fprintf("%s/%s %s\n    %s\n", db.(f{n}){r,1}, db.(f{n}){r,2}, db.(f{n}){r,3}, db.(f{n}){r,8})
+	    	one_time_found=1;
+	    endif
+	endfor
+	if one_time_found == 0
+	    fprintf("%s not found or unknown.\n", searchstring)
 	endif
 endfunction
 
